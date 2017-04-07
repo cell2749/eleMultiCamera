@@ -1,0 +1,24 @@
+{
+  "name": "elemulticamera",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron main.js",
+    "run-script": "clean.cmd"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron-compile": "^6.2.0",
+    "electron-rebuild": "^1.5.7",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "wcjs-player": "^6.0.1",
+    "wcjs-prebuilt": "^3.0.0"
+  },
+  "devDependencies": {
+    "electron-compilers": "^5.7.0",
+    "video.js": "^5.19.1"
+  }
+}
