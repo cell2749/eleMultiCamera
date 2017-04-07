@@ -9,7 +9,7 @@ const {app, BrowserWindow} = electron;
 const ele_compile = require('electron-compile').init(__dirname, require.resolve('./main'));
 //import {enableLiveReload} from 'electron-compile';
 
-
+app.commandLine.appendSwitch('--enable-npapi');
 
 //enableLiveReload();
 app.on('ready', function(){

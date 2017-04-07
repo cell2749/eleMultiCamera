@@ -11,7 +11,7 @@ class Player extends React.Component {
 
     componentDidMount(){
         this.player = videojs.constructor(this.videoPlayer, {
-            src: 'http://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4',
+            src: '../video/test.mp4',
         }, () => {
             // on ready function for anything else you need to do
             // after the player is set up…
@@ -38,11 +38,7 @@ class Player extends React.Component {
 
     render(){
         return (<div>
-            <video
-                id="videoPlayer"
-                ref={(c) => { this.videoPlayer = c; }}
-            />
-            <button onClick={this.togglePlayback()}>Kek</button>
+
         </div>);
     }
 }
