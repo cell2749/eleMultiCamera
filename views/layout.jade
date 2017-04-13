@@ -6,13 +6,17 @@ html
         title Testing
         link(rel="stylesheet" href="../styles/main.css")
         link(rel="stylesheet" href="../node_modules/video.js/dist/video-js.css")
-
-
         style(type="text/css").
-            .webchimeras {
-                float: left;
-                width: 50%;
-                height: 100%
+            body, html {
+                width: 100%;
+                height: 100%;
+                padding: 0px;
+                margin: 0px
+            }
+
+            #player {
+                width: 100%;
+                height: 400px;
             }
     body
         block content

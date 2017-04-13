@@ -10,12 +10,15 @@ const ele_compile = require('electron-compile').init(__dirname, require.resolve(
 //import {enableLiveReload} from 'electron-compile';
 
 app.commandLine.appendSwitch('--enable-npapi');
-
+if (process.platform == 'win32') {
+    process.env['VLC_PLUGIN_PATH'] = require('path').join(__dirname, 'node_modules/wcjs-prebuilt/bin/plugins');
+}
 //enableLiveReload();
 app.on('ready', function(){
-    let mainWindow = new BrowserWindow({ width: 800, height: 600 });
+    let mainWindow = new BrowserWindow({ width: 1600, height: 1200 });
 
     mainWindow.loadURL(`file://${__dirname}/views/index.jade`);
     mainWindow.webContents.openDevTools();
+    console.log("Architecture: " + process.arch);
 //// the rest...
 });
