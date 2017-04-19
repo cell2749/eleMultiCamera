@@ -1,0 +1,7 @@
+{
+  "username":"test",
+  "password":"test",
+  "appName":"live",
+  "host":"http://streamer.metropolia.fi",
+  "port":"8087"
+}

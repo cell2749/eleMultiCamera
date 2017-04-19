@@ -13,9 +13,11 @@
     "electron": "^1.4.3",
     "electron-compile": "^6.2.0",
     "electron-rebuild": "^1.5.7",
+    "material-ui": "^0.17.4",
     "node-libcurl": "^1.1.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
+    "react-tap-event-plugin": "^2.0.1",
     "request-digest": "^1.0.9",
     "wcjs-player": "^6.0.1",
     "wcjs-prebuilt": "^3.0.0"
