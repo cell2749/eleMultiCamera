@@ -26,26 +26,27 @@ class MyList extends React.Component {
         this.toggleElement = this.toggleElement.bind(this);
     }
     toggleElement(key){
-        let element = this.refs[key].props;
-        let elementStyles = this.state.elementStyles;
-        if(element.backgroundColor==this.props.color.itemColor){
-            elementStyles[key]={
-              backgroundColor:this.props.color.itemSeletedColor,
-              hoverColor:this.props.color.itemSelectedHoverColor
-            };
-            this.setState({
-                elementStyles:elementStyles
-            });
-        }else{
-            elementStyles[key]={
-                backgroundColor:this.props.color.itemColor,
-                hoverColor:this.props.color.itemHoverColor
-            };
-            this.setState({
-                elementStyles:elementStyles
-            });
+        if(this.props.callback(key)) {
+            let element = this.refs[key].props;
+            let elementStyles = this.state.elementStyles;
+            if (element.backgroundColor == this.props.color.itemColor) {
+                elementStyles[key] = {
+                    backgroundColor: this.props.color.itemSeletedColor,
+                    hoverColor: this.props.color.itemSelectedHoverColor
+                };
+                this.setState({
+                    elementStyles: elementStyles
+                });
+            } else {
+                elementStyles[key] = {
+                    backgroundColor: this.props.color.itemColor,
+                    hoverColor: this.props.color.itemHoverColor
+                };
+                this.setState({
+                    elementStyles: elementStyles
+                });
+            }
         }
-        this.props.callback(key);
     }
     render(){
         let elementNames = this.props.elementNames;
@@ -67,8 +68,8 @@ class MyList extends React.Component {
                     backgroundColor={backgroundColor}
                     hoverColor={hoverColor}
                     label={elementNames[key]}
-                    onTouchTap={() => {
-                        this.toggleElement(key)
+                    onClick={() => {
+                        this.toggleElement(key);
                     }}
                     style={{
                         width: "100%"

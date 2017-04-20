@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "electron main.js",
-    "run-script": "clean.cmd"
+    "run-script": "./clean.cmd"
   },
   "author": "",
   "license": "ISC",
@@ -16,8 +16,11 @@
     "electron-rebuild": "^1.5.7",
     "material-ui": "^0.17.4",
     "node-libcurl": "^1.1.0",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "prop-types": "^15.5.8",
+    "react": "^15.5.0",
+    "react-addons-css-transition-group": "^15.5.2",
+    "react-dom": "^15.5.0",
+    "react-notifications": "^1.3.0",
     "react-tap-event-plugin": "^2.0.1",
     "request-digest": "^1.0.9",
     "wcjs-player": "6.0.1",

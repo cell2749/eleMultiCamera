@@ -1,11 +1,15 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import HTTPdigest from "request-digest";
-import Player from "../jsx_components/player.jsx";
-import * as wowza from "../wowza.json";
 import * as electron from "electron";
 const {remote} = electron;
+import HTTPdigest from "request-digest";
+
+//My Components
 import MyList from "../jsx_components/list.jsx";
+import Player from "../jsx_components/player.jsx";
+import Theater from "../jsx_components/theater.jsx";
+
+import * as wowza from "../wowza.json";
 //Materials
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -14,6 +18,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
 import ContentSort from 'material-ui/svg-icons/content/sort';
+//Additional UI components
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 
 const COLOR={
@@ -37,14 +43,18 @@ injectTapEventPlugin();
 
 
 class App extends React.Component {
+
     constructor(props){
         super(props);
         this.state = {
             dummy:(<p>Hello World</p>),
-            players:(<div></div>),
+            players:{},
             streams:{},
-            drawerIsOpen:false
+            theater:(<div></div>),
+            drawerIsOpen:false,
+            pattern:[1,1]
         };
+        this._disableNotifications=false;
         //bindings
         this.toggleStreamNames = this.toggleStreamNames.bind(this);
         this.fetchStreamNames = this.fetchStreamNames.bind(this);
@@ -111,7 +121,7 @@ class App extends React.Component {
     fetchStreamNames(){
         let that = this;
         let streamNames = {};
-
+        let players = this.state.players;
         let digestRequest = HTTPdigest(this.props.username, this.props.password);
         digestRequest.request({
             host: that.props.wowzaSEhost,
@@ -133,8 +143,15 @@ class App extends React.Component {
                         streamNames[incomingStream.sourceIp] = incomingStream.name;
                     });
                 });
+
+                for(let address in players){
+                    if(!streamNames.hasOwnProperty(address)){
+                        delete players[address];
+                    }
+                }
                 that.setState({
-                    streams: streamNames
+                    streams: streamNames,
+                    players: players
                 });
             }catch(e){
                 console.log(e);
@@ -151,7 +168,57 @@ class App extends React.Component {
         });
     }
     toggleStream(address){
-        console.log("Hello: "+this.state.streams[address]);
+        let MAX_SIZE = this.state.pattern[0]*this.state.pattern[1];
+
+        if(Object.keys(this.state.players).length<MAX_SIZE) {
+            let players = this.state.players;
+
+            //TODO test if streams still has the address
+            /**
+             * 1. Remove Player if rtsp end shuts down -- callback???
+             * 2. On Refresh empty the players, that are not in refresh request -- done
+             * 3. Renew Theater upon emptying the players -- done automatically through setState
+             * 4. ???
+             * 5. Profit
+             * */
+            if (!this.state.players.hasOwnProperty(address)) {
+                players[address] = this.state.streams[address];
+            } else {
+                delete players[address];
+            }
+            let theater = (<Theater videoNames={players} pattern={[1,1]}/>)
+            this.setState({
+                players: players,
+                theater: theater
+            });
+            return true;
+        }else{
+            let players = this.state.players;
+            if (this.state.players.hasOwnProperty(address)) {
+                delete players[address];
+
+                let theater = (<Theater videoNames={players} pattern={[1, 1]}/>)
+                this.setState({
+                    players: players,
+                    theater: theater
+                });
+
+                return true;
+
+            }else {
+                let that = this;
+
+                if(!this._disableNotifications) {
+                    that._disableNotifications=true;
+                    let timeout = setTimeout(()=>{that._disableNotifications=false},3000);
+                    NotificationManager.error("De-Select elements!", "Limit Reached!", 3000,()=>{
+                        clearTimeout(timeout);
+                        that._disableNotifications=false
+                    });
+                }
+                return false;
+            }
+        }
     }
     render(){
         const streamListStyle = {
@@ -194,6 +261,9 @@ class App extends React.Component {
                                 elementNames={this.state.streams}
                                 callback={this.toggleStream}
                             />
+                            <div id="NotificationContainerContainer">
+                                <NotificationContainer/>
+                            </div>
                             <RaisedButton
                                 onTouchTap={this.exitApp}
                                 label="Exit"
@@ -211,7 +281,7 @@ class App extends React.Component {
                         </div>
                     </Drawer>
                     <div id="players" style={{backgroundColor:COLOR.playersBackground}}>
-                        {this.state.players}
+                        {this.state.theater}
                     </div>
                 </div>
             </MuiThemeProvider>);

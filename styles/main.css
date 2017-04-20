@@ -46,5 +46,23 @@
     rgba(216,27,96, 0.8) 50%,
     transparent,
     transparent)
-
+}
+.notification{
+    font-size: 1em;
+    padding: 10px 10px 10px 10px;
+    color: #fff;
+    background-color: #263238;
+    box-shadow: 0 0 12px #263238;
+    width:100%;
+}
+.notification-container{
+    box-sizing: border-box;
+    position: relative;
+    width: 100%;
+}
+.notification-error {
+    background-color: #880E4F;
+}
+.notification-error:before{
+    content:none;
 }
