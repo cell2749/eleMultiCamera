@@ -33,7 +33,7 @@ class Theater extends React.Component{
 
         let totalVideos = horizontal * vertical;
         let fullHeight = window.innerHeight;
-        let fullWidth = window.innerWidth -48;
+        let fullWidth = window.innerWidth;
         let style = {
           width: Math.floor(fullWidth/horizontal),
           height: Math.floor(fullHeight/vertical),

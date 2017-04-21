@@ -15,7 +15,7 @@ if (process.platform == 'win32') {
 }
 //enableLiveReload();
 app.on('ready', function(){
-    let mainWindow = new BrowserWindow({ width: 500, height: 500,/*});*/ frame:false });
+    let mainWindow = new BrowserWindow({ width: 500, height: 500,/*});/**/ frame:false });
     //mainWindow.maximize();
     mainWindow.setFullScreen(true);
     mainWindow.loadURL(`file://${__dirname}/views/index.jade`);

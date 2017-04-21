@@ -52,7 +52,24 @@ class App extends React.Component {
             streams:{},
             theater:(<div></div>),
             drawerIsOpen:false,
-            pattern:[1,1]
+            pattern:[2,2],
+            patternIcons: {
+                p2x2: {
+                    _: "../styles/icons/2x2-active.png",
+                    active: "../styles/icons/2x2-active.png",
+                    normal: "../styles/icons/2x2-normal.png"
+                },
+                p3x3: {
+                    _: "../styles/icons/3x3-normal.png",
+                    active: "../styles/icons/3x3-active.png",
+                    normal: "../styles/icons/3x3-normal.png"
+                },
+                p4x4: {
+                    _: "../styles/icons/4x4-normal.png",
+                    active: "../styles/icons/4x4-active.png",
+                    normal: "../styles/icons/4x4-normal.png"
+                }
+            }
         };
         this._disableNotifications=false;
         //bindings
@@ -60,8 +77,7 @@ class App extends React.Component {
         this.fetchStreamNames = this.fetchStreamNames.bind(this);
         this.toggleDrawer = this.toggleDrawer.bind(this);
         this.toggleStream = this.toggleStream.bind(this);
-
-
+        this.setPattern = this.setPattern.bind(this);
     }
     componentDidMount(){
 
@@ -173,20 +189,14 @@ class App extends React.Component {
         if(Object.keys(this.state.players).length<MAX_SIZE) {
             let players = this.state.players;
 
-            //TODO test if streams still has the address
-            /**
-             * 1. Remove Player if rtsp end shuts down -- callback???
-             * 2. On Refresh empty the players, that are not in refresh request -- done
-             * 3. Renew Theater upon emptying the players -- done automatically through setState
-             * 4. ???
-             * 5. Profit
-             * */
+            //TODO Remove Player if rtsp end shuts down -- callback???
+
             if (!this.state.players.hasOwnProperty(address)) {
                 players[address] = this.state.streams[address];
             } else {
                 delete players[address];
             }
-            let theater = (<Theater videoNames={players} pattern={[1,1]}/>)
+            let theater = (<Theater videoNames={players} pattern={this.state.pattern}/>)
             this.setState({
                 players: players,
                 theater: theater
@@ -197,7 +207,7 @@ class App extends React.Component {
             if (this.state.players.hasOwnProperty(address)) {
                 delete players[address];
 
-                let theater = (<Theater videoNames={players} pattern={[1, 1]}/>)
+                let theater = (<Theater videoNames={players} pattern={this.state.pattern}/>)
                 this.setState({
                     players: players,
                     theater: theater
@@ -220,6 +230,22 @@ class App extends React.Component {
             }
         }
     }
+    setPattern(pattern){
+        //TODO Update Theater
+        let patternIcons = this.state.patternIcons;
+        let patternString = "p"+pattern[0]+"x"+pattern[1];
+        for(let key in patternIcons){
+            if(patternString==key){
+                patternIcons[key]._ = patternIcons[key].active;
+            }else{
+                patternIcons[key]._ = patternIcons[key].normal;
+            }
+        }
+        this.setState({
+            pattern:pattern,
+            patternIcons:patternIcons
+        })
+    }
     render(){
         const streamListStyle = {
             height: "50%",
@@ -233,8 +259,10 @@ class App extends React.Component {
         return (
             <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
                 <div>
-                    <div id="drawerClosed" style={{backgroundColor:COLOR.slider}}>
-                        <IconButton onTouchTap={this.toggleDrawer}  style={{ float:"left", backgroundColor:COLOR.slider,height:"100%"}}><ContentSort /></IconButton>
+                    <div id="drawerClosed" className="drawerClosed" >
+                    <div className="whatIf">
+                        <IconButton id="drawerClosedButton" className="drawerClosedButton" onTouchTap={this.toggleDrawer} style={{ float:"left", backgroundColor:COLOR.slider,height:"100%"}}><ContentSort /></IconButton>
+                    </div>
                     </div>
                     <Drawer openSecondary={false} open={this.state.drawerIsOpen} >
                         <div id="drawerContent" style={{backgroundColor:COLOR.drawerBackground}}>
@@ -261,6 +289,38 @@ class App extends React.Component {
                                 elementNames={this.state.streams}
                                 callback={this.toggleStream}
                             />
+                            <div id="PatternContainer">
+                                <img id="Pattern2x2" src={this.state.patternIcons.p2x2._} style={{
+                                    padding:2,
+                                    margin:5,
+                                    width:48,
+                                    height:48,
+                                    backgroundColor:COLOR.playersBackground,
+                                    borderRadius:4
+                                }} onClick={()=>{
+                                    this.setPattern([2,2]);
+                                }}/>
+                                <img id="Pattern3x3" src={this.state.patternIcons.p3x3._} style={{
+                                    padding:2,
+                                    margin:5,
+                                    width:48,
+                                    height:48,
+                                    backgroundColor:COLOR.playersBackground,
+                                    borderRadius:4
+                                }} onClick={()=>{
+                                    this.setPattern([3,3]);
+                                }}/>
+                                <img id="Pattern4x4" src={this.state.patternIcons.p4x4._} style={{
+                                    padding:2,
+                                    margin:5,
+                                    width:48,
+                                    height:48,
+                                    backgroundColor:COLOR.playersBackground,
+                                    borderRadius:4
+                                }} onClick={()=>{
+                                    this.setPattern([4,4]);
+                                }}/>
+                            </div>
                             <div id="NotificationContainerContainer">
                                 <NotificationContainer/>
                             </div>
@@ -274,7 +334,6 @@ class App extends React.Component {
                                     left:"5px"
                                 }}
                             />
-
                         </div>
                         <div id="drawerOpen">
                             <IconButton onTouchTap={this.toggleDrawer}  style={{ float:"right", backgroundColor:COLOR.slider,height:"100%"}}><ContentSort /></IconButton>
