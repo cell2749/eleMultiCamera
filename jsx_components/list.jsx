@@ -1,9 +1,8 @@
 import * as React from 'react';
 
 //Material-ui imports
-import Paper from 'material-ui/Paper';
-import { Tabs, Tab, List, ListItem } from 'material-ui';
-import FlatButton from 'material-ui/FlatButton';
+import {Paper,FlatButton} from 'material-ui';
+
 
 class MyList extends React.Component {
     constructor(props){

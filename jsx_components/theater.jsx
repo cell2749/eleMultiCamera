@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import Player from "../jsx_components/player.jsx";
 
 class Theater extends React.Component{
@@ -43,7 +42,7 @@ class Theater extends React.Component{
         let players=[];
         for(let key in videoNames){
             if(players.length<totalVideos) {
-                players.push(<Player name={videoNames[key]} key={key} style={style}/>);
+                players.push(<Player name={videoNames[key]} notify={videoNames[key]} key={key} style={style}/>);
             }
         }
         return (

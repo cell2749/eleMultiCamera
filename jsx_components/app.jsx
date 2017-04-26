@@ -34,10 +34,15 @@ const COLOR={
     itemSeletedColor:"#4A148C",
     itemSelectedHoverColor:"#6A1B9A",
 };
-////temporary ontapthingy
+/**
+ * Temporary onTouchTap (instead of onClick) for Material UI.
+ * Check updates if it is to be removed.
+ * */
 import injectTapEventPlugin from 'react-tap-event-plugin';
-// Needed for onTouchTap
-// http://stackoverflow.com/a/34015469/988941
+/**
+ * Needed for onTouchTap
+ * http://stackoverflow.com/a/34015469/988941
+ */
 injectTapEventPlugin();
 
 
