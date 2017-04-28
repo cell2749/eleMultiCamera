@@ -3,23 +3,29 @@
  */
 const electron = require("electron");
 const {app, BrowserWindow} = electron;
+
+const crypto = require('crypto');
+
+
 //const locals = {/* ...*/};
 
 //const pug = require('electron-pug')({pretty: true}, locals);
 const ele_compile = require('electron-compile').init(__dirname, require.resolve('./main'));
-//import {enableLiveReload} from 'electron-compile';
-
+//import {enableLiveReload} from 'electron-compile';console.log(app);
 app.commandLine.appendSwitch('--enable-npapi');
 if (process.platform == 'win32') {
     process.env['VLC_PLUGIN_PATH'] = require('path').join(__dirname, 'node_modules/wcjs-prebuilt/bin/plugins');
 }
 //enableLiveReload();
-app.on('ready', function(){
-    let mainWindow = new BrowserWindow({ width: 500, height: 500});/**/// , frame:false });
+app.on('ready', () => {
+    let mainWindow = new BrowserWindow({width: 500, height: 500  });///**/ , frame:false });
     mainWindow.maximize();
     //mainWindow.setFullScreen(true);
     mainWindow.loadURL(`file://${__dirname}/views/index.jade`);
     mainWindow.webContents.openDevTools();
     console.log("Architecture: " + process.arch);
 //// the rest...
+});
+app.on('window-all-closed', () => {
+    app.quit()
 });

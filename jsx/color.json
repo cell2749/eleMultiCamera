@@ -1,0 +1,12 @@
+{
+  "drawerButton": "#455A64",
+  "drawerBackground": "#263238",
+  "exitButton": "#880E4F",
+  "playersBackground": "#455A64",
+  "slider": "#212121",
+  "paper": "#455A64",
+  "itemColor": "#006064",
+  "itemHoverColor": "#00838F",
+  "itemSeletedColor": "#4A148C",
+  "itemSelectedHoverColor": "#6A1B9A"
+}

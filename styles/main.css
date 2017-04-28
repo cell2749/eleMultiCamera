@@ -1,94 +1,115 @@
-#main{
+#main {
     padding: 50px 50px 50px 50px;
 }
-#players{
-    position:fixed;
-    height:100%;
-    width:100%;
-    right:0px;
+
+#players {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    right: 0px;
     margin: 0px 0px 0px 0px;
-    z-index:10 !important;
+    z-index: 10 !important;
 }
-#drawerClosed{
-    position:fixed;
-    height:100%;
-    width:48px;
-    left:0px;
-    top:0px;
-    background-color:rgba(255,255,255,0);
-    z-index:11 !important;
+
+#drawerClosed {
+    position: fixed;
+    height: 100%;
+    width: 48px;
+    left: 0px;
+    top: 0px;
+    background-color: rgba(255, 255, 255, 0);
+    z-index: 11 !important;
 }
-.whatIf{
-    position:fixed;
-    height:100%;
-    max-width:0px;
-    left:0px;
-    top:0px;
-    overflow:hidden;
+
+.whatIf {
+    position: fixed;
+    height: 100%;
+    max-width: 0px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
     transition: max-width 0.1s ease-in;
-    z-index:12 !important;
+    z-index: 12 !important;
 }
-.drawerClosed:hover .whatIf{
-    max-width:48px;
-    z-index:13 !important;
+
+.drawerClosed:hover .whatIf {
+    max-width: 48px;
+    z-index: 13 !important;
 }
-#drawerContent{
-    height:100%;
+
+#drawerContent {
+    height: 100%;
     max-width: calc(100% - 48px);
-    top:0px;
-    float:left;
+    top: 0px;
+    float: left;
 
 }
-#drawerOpen{
-    height:100%;
-    width:48px;
-    float:right;
-    top:0px;
+
+#drawerOpen {
+    height: 100%;
+    width: 48px;
+    float: right;
+    top: 0px;
 }
 
 ::-webkit-scrollbar {
-    background-color:#78909C;
+    background-color: #78909C;
     width: 6px;
 }
+
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
+
 ::-webkit-scrollbar-thumb {
 
-    -webkit-box-shadow: inset 0 0 10px rgba(38,50,56,0.7);
-    background-color:rgb(173,20,87);
+    -webkit-box-shadow: inset 0 0 10px rgba(38, 50, 56, 0.7);
+    background-color: rgb(173, 20, 87);
     background-image: -webkit-linear-gradient(90deg,
     transparent,
-    rgba(216,27,96, 0.8) 50%,
+    rgba(216, 27, 96, 0.8) 50%,
     transparent,
     transparent)
 }
-.notification{
+
+.notification {
     font-size: 1em;
     padding: 10px 10px 10px 10px;
     color: #fff;
     background-color: #263238;
     box-shadow: 0 0 12px #263238;
-    width:100%;
+    width: 100%;
 }
-.notification-container{
+
+.notification-container {
     box-sizing: border-box;
     position: relative;
     width: 100%;
 }
+
 .notification-error {
     background-color: #880E4F;
 }
-.notification-error:before{
-    content:none;
+
+.notification-error:before {
+    content: none;
 }
 
 #Pattern2x2:hover {
     content: url("./icons/2x2-normal-hover.png");
 }
+
 #Pattern3x3:hover {
     content: url("./icons/3x3-normal-hover.png");
 }
+
 #Pattern4x4:hover {
     content: url("./icons/4x4-normal-hover.png");
+}
+
+#app {
+    height: 100%;
+    width: 100%;
+    overflow:hidden;
+    background-color:#455A64;
 }

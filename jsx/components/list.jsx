@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 //Material-ui imports
-import {Paper,FlatButton} from 'material-ui';
+import {Paper, FlatButton} from 'material-ui';
 
 
 class MyList extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         /**
          * Props:
@@ -14,18 +14,16 @@ class MyList extends React.Component {
          * elementNames - JSON
          *
          * colors?
-        * */
+         * */
         this.state = {
-            elementStyles:{
-
-            }
+            elementStyles: {}
         };
-
         //Button bindings
         this.toggleElement = this.toggleElement.bind(this);
     }
-    toggleElement(key){
-        if(this.props.callback(key)) {
+
+    toggleElement(key) {
+        if (this.props.callback(key)) {
             let element = this.refs[key].props;
             let elementStyles = this.state.elementStyles;
             if (element.backgroundColor == this.props.color.itemColor) {
@@ -47,15 +45,16 @@ class MyList extends React.Component {
             }
         }
     }
-    render(){
+
+    render() {
         let elementNames = this.props.elementNames;
         let elementList = [];
         let elementStyles = this.state.elementStyles;
 
-        for(let key in elementNames){
+        for (let key in elementNames) {
             let backgroundColor = this.props.color.itemColor;
             let hoverColor = this.props.color.itemHoverColor;
-            if(elementStyles[key]){
+            if (elementStyles[key]) {
                 backgroundColor = elementStyles[key].backgroundColor;
                 hoverColor = elementStyles[key].hoverColor;
             }
@@ -77,17 +76,17 @@ class MyList extends React.Component {
             );
 
         }
-        const streamListStyle = {
+        const defaultStyle = {
             height: "50%",
             width: "95%",
             margin: 5,
             textAlign: 'left',
             display: 'inline-block',
-            overflowY:"scroll",
+            overflowY: "scroll",
             backgroundColor: "#616161"
         };
-        return(
-            <Paper style={this.props.style||defaultStyle} zDepth={this.props.depth||1}>
+        return (
+            <Paper style={this.props.style || defaultStyle} zDepth={this.props.depth || 1}>
                 {elementList}
             </Paper>
 
@@ -95,10 +94,3 @@ class MyList extends React.Component {
     }
 }
 module.exports = MyList;
-
-/*
-
- <Paper style={this.props.style||defaultStyle} zDepth={this.props.depth||1}>
- {elementList}
- </Paper>
-*/
