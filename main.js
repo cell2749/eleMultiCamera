@@ -4,8 +4,6 @@
 const electron = require("electron");
 const {app, BrowserWindow} = electron;
 
-const crypto = require('crypto');
-
 
 //const locals = {/* ...*/};
 

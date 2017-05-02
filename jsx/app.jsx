@@ -27,38 +27,31 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            view: (<Login changeStateTo={this.changeStateTo.bind(this)}/>),
-            settings:{
-                username:"",
-                password:"",
-                appName:""
-            }
+            view: (<Login changeStateTo={this.changeStateTo.bind(this)}/>)
+
         };
-        this.viewState = {
+
+    }
+    componentDidMount(){
+    }
+    changeStateTo(state,settings) {
+        let states = {
             login: (<Login changeStateTo={this.changeStateTo.bind(this)}/>),
             monitoring: (<Monitoring changeStateTo={this.changeStateTo.bind(this)}
                                      wowzaSEhost={wowza.host}
                                      wowzaSEport={wowza.port}
-                                     username={this.state.settings.username}
-                                     password={this.state.settings.password}
-                                     wowzaApp={this.state.settings.appName}/>),
+                                     username={settings.username}
+                                     password={settings.password}
+                                     wowzaApp={settings.appName}/>),
             configuration: (<Configuration changeStateTo={this.changeStateTo.bind(this)}/>)
-        }
-    }
-    componentDidMount(){
-
-    }
-    changeStateTo(state,settings) {
-
-        if(this.viewState.hasOwnProperty(state)) {
+        };
+        if(states.hasOwnProperty(state)) {
             this.setState({
-                view:this.viewState[state],
-                settings: settings
+                view:states[state]
             });
         }
     }
     render() {
-
         return (
             <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)} style={{height:"100%",width:"100%",backgroundColor:COLOR.itemColor,color:COLOR.itemColor}}>
                 {this.state.view}

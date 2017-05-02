@@ -37,6 +37,7 @@ class Monitoring extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log(props);
         this.state = {
             dummy: (<p>Hello World</p>),
             players: {},
@@ -82,6 +83,7 @@ class Monitoring extends React.Component {
         let that = this;
         let streamNames = {};
         let players = this.state.players;
+        console.log(that.props.username,that.props.password);
         let digestRequest = HTTPdigest(this.props.username, this.props.password);
         digestRequest.request({
             host: that.props.wowzaSEhost,
@@ -95,28 +97,30 @@ class Monitoring extends React.Component {
         }, function (error, response, body) {
             if (error) {
                 console.log(error);
-            }
-            try {
-                let jsonResp = JSON.parse(body);
-                jsonResp.instanceList.forEach((instance) => {
-                    instance.incomingStreams.forEach((incomingStream) => {
-                        streamNames[incomingStream.sourceIp] = incomingStream.name;
-                    });
-                });
+            }else {
+                try {
 
-                for (let address in players) {
-                    if (!streamNames.hasOwnProperty(address)) {
-                        delete players[address];
+                    let jsonResp = JSON.parse(body);
+                    jsonResp.instanceList.forEach((instance) => {
+                        instance.incomingStreams.forEach((incomingStream) => {
+                            streamNames[incomingStream.sourceIp] = incomingStream.name;
+                        });
+                    });
+
+                    for (let address in players) {
+                        if (!streamNames.hasOwnProperty(address)) {
+                            delete players[address];
+                        }
                     }
+                    let theater = (<Theater videoNames={players} pattern={that.state.pattern}/>);
+                    that.setState({
+                        streams: streamNames,
+                        players: players,
+                        theater: theater
+                    });
+                } catch (e) {
+                    console.log(e);
                 }
-                let theater = (<Theater videoNames={players} pattern={that.state.pattern}/>);
-                that.setState({
-                    streams: streamNames,
-                    players: players,
-                    theater: theater
-                });
-            } catch (e) {
-                console.log(e);
             }
         });
 
