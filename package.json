@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "start": "electron main.js",
-    "run-script": "./clean.cmd"
+    "run-script": "./clean.cmd",
+    "postinstall": "cd ../ && './node_modules/.bin/electron-rebuild' -m ./src/node_modules/ -w keytar -p -f"
   },
   "author": "",
   "license": "ISC",

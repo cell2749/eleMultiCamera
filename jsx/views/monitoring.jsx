@@ -1,15 +1,12 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import * as electron from "electron";
 const {remote} = electron;
 import HTTPdigest from "request-digest";
 
 //My Components
 import MyList from "../../jsx/components/list.jsx";
-import Player from "../../jsx/components/player.jsx";
 import Theater from "../../jsx/components/theater.jsx";
 
-import * as wowza from "../../wowza.json";
 //Materials
 import RaisedButton from 'material-ui/RaisedButton';
 import Drawer from 'material-ui/Drawer';
@@ -37,7 +34,6 @@ class Monitoring extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(props);
         this.state = {
             dummy: (<p>Hello World</p>),
             players: {},
@@ -65,7 +61,6 @@ class Monitoring extends React.Component {
         };
         this._disableNotifications = false;
         //50 Shades of bindings
-        //this.toggleStreamNames = this.toggleStreamNames.bind(this);
         this.fetchStreamNames = this.fetchStreamNames.bind(this);
         this.toggleDrawer = this.toggleDrawer.bind(this);
         this.toggleStream = this.toggleStream.bind(this);
@@ -79,16 +74,16 @@ class Monitoring extends React.Component {
     componentWillUnmount() {
         console.log("Unmount - App");
     }
+
     fetchStreamNames() {
         let that = this;
         let streamNames = {};
         let players = this.state.players;
-        console.log(that.props.username,that.props.password);
-        let digestRequest = HTTPdigest(this.props.username, this.props.password);
+        let digestRequest = HTTPdigest(this.props.settings.username, this.props.settings.password);
         digestRequest.request({
-            host: that.props.wowzaSEhost,
-            path: '/v2/servers/_defaultServer_/vhosts/_defaultVHost_/applications/' + that.props.wowzaApp + '/instances',
-            port: that.props.wowzaSEport,
+            host: "http://" + that.props.wowza.host,
+            path: `/v2/servers/${that.props.settings.server}/vhosts/${that.props.settings.vhost}/applications/${that.props.settings.appName}/instances`,
+            port: that.props.wowza.apiPort,
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -97,7 +92,7 @@ class Monitoring extends React.Component {
         }, function (error, response, body) {
             if (error) {
                 console.log(error);
-            }else {
+            } else {
                 try {
 
                     let jsonResp = JSON.parse(body);
@@ -112,7 +107,15 @@ class Monitoring extends React.Component {
                             delete players[address];
                         }
                     }
-                    let theater = (<Theater videoNames={players} pattern={that.state.pattern}/>);
+                    let theater = (
+                        <Theater
+                            appName={that.props.wowza.appName}
+                            host={that.props.wowza.host}
+                            port={that.props.wowza.streamerPort}
+                            videoNames={players}
+                            pattern={that.state.pattern}
+                        />
+                    );
                     that.setState({
                         streams: streamNames,
                         players: players,
@@ -123,7 +126,6 @@ class Monitoring extends React.Component {
                 }
             }
         });
-
     }
 
     exitApp() {
@@ -142,14 +144,21 @@ class Monitoring extends React.Component {
         if (Object.keys(this.state.players).length < MAX_SIZE) {
             let players = this.state.players;
 
-            //TODO Remove Player if rtsp end shuts down -- callback???
+            //TODO Remove Player automatically if rtsp end shuts down -- callback???
 
             if (!this.state.players.hasOwnProperty(address)) {
                 players[address] = this.state.streams[address];
             } else {
                 delete players[address];
             }
-            let theater = (<Theater videoNames={players} pattern={this.state.pattern}/>)
+            let theater = (
+                <Theater
+                    appName={this.props.wowza.appName}
+                    host={this.props.wowza.host}
+                    port={this.props.wowza.streamerPort}
+                    videoNames={players}
+                    pattern={this.state.pattern}
+                />);
             this.setState({
                 players: players,
                 theater: theater
@@ -160,7 +169,14 @@ class Monitoring extends React.Component {
             if (this.state.players.hasOwnProperty(address)) {
                 delete players[address];
 
-                let theater = (<Theater videoNames={players} pattern={this.state.pattern}/>)
+                let theater = (
+                    <Theater
+                        appName={this.props.wowza.appName}
+                        host={this.props.wowza.host}
+                        port={this.props.wowza.streamerPort}
+                        videoNames={players}
+                        pattern={this.state.pattern}
+                    />);
                 this.setState({
                     players: players,
                     theater: theater
@@ -198,11 +214,18 @@ class Monitoring extends React.Component {
         }
         //TODO remove some videos for small patterns
 
-        let theater = (<Theater videoNames={this.state.players} pattern={pattern}/>);
+        let theater = (
+            <Theater
+                appName={this.props.wowza.appName}
+                host={this.props.wowza.host}
+                port={this.props.wowza.streamerPort}
+                videoNames={this.state.players}
+                pattern={pattern}/>
+        );
         this.setState({
             pattern: pattern,
             patternIcons: patternIcons,
-            theater:theater
+            theater: theater
         })
     }
 
@@ -220,103 +243,103 @@ class Monitoring extends React.Component {
         //</MuiThemeProvider>
         return (
 
-                <div>
-                    <div id="drawerClosed" className="drawerClosed">
-                        <div className="whatIf">
-                            <IconButton id="drawerClosedButton" className="drawerClosedButton"
-                                        onTouchTap={this.toggleDrawer} style={{
-                                float: "left",
-                                backgroundColor: COLOR.slider,
-                                height: "100%"
-                            }}><ContentSort /></IconButton>
-                        </div>
-                    </div>
-                    <Drawer openSecondary={false} open={this.state.drawerIsOpen}>
-                        <div id="drawerContent" style={{backgroundColor: COLOR.drawerBackground}}>
-                            <RaisedButton
-                                onTouchTap={this.toggleStreamNames}
-                                label="Request"
-                                backgroundColor={COLOR.drawerButton}
-                                style={{
-                                    margin: 5
-                                }}
-                            />
-                            <RaisedButton
-                                onTouchTap={this.fetchStreamNames}
-                                label="Refresh"
-                                backgroundColor={COLOR.drawerButton}
-                                style={{
-                                    margin: 5
-                                }}
-                            />
-                            <MyList
-                                style={streamListStyle}
-                                color={COLOR}
-                                depth={2}
-                                elementNames={this.state.streams}
-                                callback={this.toggleStream}
-                            />
-                            <div id="PatternContainer">
-                                <img id="Pattern2x2" src={this.state.patternIcons.p2x2._} style={{
-                                    padding: 2,
-                                    margin: 5,
-                                    width: 48,
-                                    height: 48,
-                                    backgroundColor: COLOR.playersBackground,
-                                    borderRadius: 4
-                                }} onClick={() => {
-                                    this.setPattern([2, 2]);
-                                }}/>
-                                <img id="Pattern3x3" src={this.state.patternIcons.p3x3._} style={{
-                                    padding: 2,
-                                    margin: 5,
-                                    width: 48,
-                                    height: 48,
-                                    backgroundColor: COLOR.playersBackground,
-                                    borderRadius: 4
-                                }} onClick={() => {
-                                    this.setPattern([3, 3]);
-                                }}/>
-                                <img id="Pattern4x4" src={this.state.patternIcons.p4x4._} style={{
-                                    padding: 2,
-                                    margin: 5,
-                                    width: 48,
-                                    height: 48,
-                                    backgroundColor: COLOR.playersBackground,
-                                    borderRadius: 4
-                                }} onClick={() => {
-                                    this.setPattern([4, 4]);
-                                }}/>
-                            </div>
-                            <div id="NotificationContainerContainer">
-                                <NotificationContainer/>
-                            </div>
-                            <RaisedButton
-                                onTouchTap={this.exitApp}
-                                label="Exit"
-                                backgroundColor={COLOR.exitButton}
-                                style={{
-                                    position: "fixed",
-                                    bottom: "5px",
-                                    left: "5px"
-                                }}
-                            />
-                        </div>
-                        <div id="drawerOpen">
-                            <IconButton onTouchTap={this.toggleDrawer} style={{
-                                float: "right",
-                                backgroundColor: COLOR.slider,
-                                height: "100%"
-                            }}><ContentSort /></IconButton>
-                        </div>
-                    </Drawer>
-                    <div id="players" style={{backgroundColor: COLOR.playersBackground}}>
-                        {this.state.theater}
+            <div>
+                <div id="drawerClosed" className="drawerClosed">
+                    <div className="whatIf">
+                        <IconButton id="drawerClosedButton" className="drawerClosedButton"
+                                    onTouchTap={this.toggleDrawer} style={{
+                            float: "left",
+                            backgroundColor: COLOR.slider,
+                            height: "100%"
+                        }}><ContentSort /></IconButton>
                     </div>
                 </div>
-            );
+                <Drawer openSecondary={false} open={this.state.drawerIsOpen}>
+                    <div id="drawerContent" style={{backgroundColor: COLOR.drawerBackground}}>
+                        <RaisedButton
+                            onTouchTap={this.toggleStreamNames}
+                            label="Request"
+                            backgroundColor={COLOR.drawerButton}
+                            style={{
+                                margin: 5
+                            }}
+                        />
+                        <RaisedButton
+                            onTouchTap={this.fetchStreamNames}
+                            label="Refresh"
+                            backgroundColor={COLOR.drawerButton}
+                            style={{
+                                margin: 5
+                            }}
+                        />
+                        <MyList
+                            style={streamListStyle}
+                            color={COLOR}
+                            depth={2}
+                            elementNames={this.state.streams}
+                            callback={this.toggleStream}
+                        />
+                        <div id="PatternContainer">
+                            <img id="Pattern2x2" src={this.state.patternIcons.p2x2._} style={{
+                                padding: 2,
+                                margin: 5,
+                                width: 48,
+                                height: 48,
+                                backgroundColor: COLOR.playersBackground,
+                                borderRadius: 4
+                            }} onClick={() => {
+                                this.setPattern([2, 2]);
+                            }}/>
+                            <img id="Pattern3x3" src={this.state.patternIcons.p3x3._} style={{
+                                padding: 2,
+                                margin: 5,
+                                width: 48,
+                                height: 48,
+                                backgroundColor: COLOR.playersBackground,
+                                borderRadius: 4
+                            }} onClick={() => {
+                                this.setPattern([3, 3]);
+                            }}/>
+                            <img id="Pattern4x4" src={this.state.patternIcons.p4x4._} style={{
+                                padding: 2,
+                                margin: 5,
+                                width: 48,
+                                height: 48,
+                                backgroundColor: COLOR.playersBackground,
+                                borderRadius: 4
+                            }} onClick={() => {
+                                this.setPattern([4, 4]);
+                            }}/>
+                        </div>
+                        <div id="NotificationContainerContainer">
+                            <NotificationContainer/>
+                        </div>
+                        <RaisedButton
+                            onTouchTap={this.exitApp}
+                            label="Exit"
+                            backgroundColor={COLOR.exitButton}
+                            style={{
+                                position: "fixed",
+                                bottom: "5px",
+                                left: "5px"
+                            }}
+                        />
+                    </div>
+                    <div id="drawerOpen">
+                        <IconButton onTouchTap={this.toggleDrawer} style={{
+                            float: "right",
+                            backgroundColor: COLOR.slider,
+                            height: "100%"
+                        }}><ContentSort /></IconButton>
+                    </div>
+                </Drawer>
+                <div id="players" style={{backgroundColor: COLOR.playersBackground}}>
+                    {this.state.theater}
+                </div>
+            </div>
+        );
     }
 }
 module.exports = Monitoring;
 //ReactDOM.render(<App wowzaSEhost={wowza.host} wowzaSEport={wowza.port} username={wowza.username}
- //                    password={wowza.password} wowzaApp={wowza.appName}/>, document.getElementById("app"));
+//                    password={wowza.password} wowzaApp={wowza.appName}/>, document.getElementById("app"));

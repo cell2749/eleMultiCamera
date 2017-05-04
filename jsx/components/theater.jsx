@@ -11,10 +11,6 @@ class Theater extends React.Component {
         super(props);
     }
 
-    componentDidMount() {
-
-    }
-
     componentWillUnmount() {
         console.log("Unmount - Theater");
     }
@@ -35,7 +31,8 @@ class Theater extends React.Component {
         let players = [];
         for (let key in this.props.videoNames) {
             if (players.length < totalVideos) {
-                players.push(<Player name={this.props.videoNames[key]} notify={this.props.videoNames[key]} key={key}
+                players.push(<Player name={this.props.videoNames[key]} host={this.props.host} port={this.props.port}
+                                     appName={this.props.appName} notify={this.props.videoNames[key]} key={key}
                                      style={style}/>);
             }
         }

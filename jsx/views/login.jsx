@@ -1,9 +1,10 @@
 import * as React from 'react';
-import * as electron from "electron";
-const {remote} = electron;
+import {remote, ipcRenderer} from "electron";
+ipcRenderer.send("getConfig");
+
 import HTTPdigest from "request-digest";
 
-import * as wowza from "../../wowza.json";
+
 import {Paper, RaisedButton, TextField, Checkbox} from 'material-ui';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
@@ -14,12 +15,11 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: "",
-            password: "",
-            appName: "",
-            errorPassword: "",
-            errorUsername: "",
-            errorApplication: "",
+            username: remote.getGlobal("configuration").username,
+            password: remote.getGlobal("configuration").password,
+            appName: remote.getGlobal("configuration").appName,
+            server: remote.getGlobal("configuration").server,
+            vhost: remote.getGlobal("configuration").vhost,
             save: false,
             _disableNotifications: false
         };
@@ -31,12 +31,14 @@ class Login extends React.Component {
     login() {
         let that = this;
         //TODO test the connection details before logging in
-        let digestRequest = HTTPdigest(this.state.username, this.state.password);
+        let username = this.state.username;
+        let password = this.state.password;
+        let digestRequest = HTTPdigest(username, password);
 
         digestRequest.request({
-            host: wowza.host,
-            path: '/v2/servers/_defaultServer_/vhosts/_defaultVHost_/applications',
-            port: wowza.port,
+            host: "http://" + this.props.wowza.host,
+            path: `/v2/servers/${this.state.server}/vhosts/${this.state.vhost}/applications`, //server and vhost - advanced configuration?
+            port: this.props.wowza.apiPort,
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -50,23 +52,35 @@ class Login extends React.Component {
                     if (!that._disableNotifications) {
                         that._disableNotifications = true;
                         let timeout = setTimeout(() => {
-                            that._disableNotifications = false
+                            that._disableNotifications = false;
                         }, 3000);
                         NotificationManager.error("Invalid Credentials", "", 3000, () => {
                             clearTimeout(timeout);
-                            that._disableNotifications = false
+                            that._disableNotifications = false;
                         });
                     }
-                    /*that.setState({
-                        errorPassword: "Error",
-                        errorUsername: "Error",
-                        errorApplication: ""
-                    });*/
                 }
             } else {
                 try {
                     let validAppName = false;
                     let jsonResp = JSON.parse(body);
+                    console.log(jsonResp);
+                    /**
+                     *  jsonResp = {
+                     *      serverName: String
+                     *      applications: [
+                     *        {
+                     *          appType: String,
+                     *          drmEnabled: String,
+                     *          dvrEnabled: String,
+                     *          href: String,
+                     *          id: String,
+                     *          streamTargetsEnabled: Boolean,
+                     *          transcoderEnabled: Boolean
+                     *        }
+                     *      ]
+                     *  }
+                     * */
                     for (let value of jsonResp.applications) {
                         if (value.appType === "Live" && value.id === that.state.appName) {
                             validAppName = true;
@@ -83,11 +97,6 @@ class Login extends React.Component {
                                 that._disableNotifications = false
                             });
                         }
-                        /*that.setState({
-                            errorPassword: "",
-                            errorUsername: "",
-                            errorApplication: "Error"
-                        });*/
                     } else {
                         //TODO forward user to application and save login conf encoded in case of checkbox
                         //TODO node-keytar for ciphering - requires ????
@@ -98,7 +107,12 @@ class Login extends React.Component {
                             errorApplication: ""
                         });
                         if (that.state.save) {
-                            console.log("save");
+                            //keytar.setPassword(wowza.host, username, password);
+                            remote.getGlobal("configuration").username = username;
+                            remote.getGlobal("configuration").appName = that.state.appName;
+                            remote.getGlobal("configuration").password = password;
+                            ipcRenderer.send("saveConfig");
+                            console.log("saved");
                         }
                         that.props.changeStateTo("monitoring", that.state);
                         console.log("Success!");
@@ -115,48 +129,73 @@ class Login extends React.Component {
         let defaultStyle = {
             padding: 10,
             width: 532,
-            height: 200,
-            top: "calc(50% - 100px)",
+            height: 332,
+            top: "calc(50% - 166px)",
             left: "calc(50% - 266px)",
             position: "fixed",
             textAlign: 'left',
             backgroundColor: COLOR.drawerBackground
         };
+        //console.log(remote.getGlobal("configuration").username);
         return (
 
             <Paper style={this.props.style || defaultStyle} zDepth={this.props.depth || 5}>
                 <TextField
+                    id="tfUsername"
                     onChange={(e) => {
                         this.setState({username: e.target.value});
                     }}
                     floatingLabelText="Username"
-                    errorText={this.state.errorUsername}
+                    defaultValue={remote.getGlobal("configuration").username}
                     floatingLabelStyle={{
                         color: COLOR.itemHoverColor
                     }}
                 />
                 <TextField
+                    id="tfPassword"
                     onChange={(e) => {
                         this.setState({password: e.target.value});
                     }}
                     floatingLabelText="Password"
+                    defaultValue={remote.getGlobal("configuration").password}
                     floatingLabelStyle={{
                         color: COLOR.itemHoverColor
                     }}
-                    errorText={this.state.errorPassword}
                     type="password"
                 /><br/>
                 <div style={{width: "50%", display: "inline-block", textAlign: "left"}}>
                     <TextField
+                        id="tfApplication"
                         onChange={(e) => {
                             this.setState({appName: e.target.value});
                         }}
                         floatingLabelText="Application"
-                        errorText={this.state.errorApplication}
+                        defaultValue={remote.getGlobal("configuration").appName}
                         floatingLabelStyle={{
                             color: COLOR.itemHoverColor
                         }}
-
+                    />
+                    <TextField
+                        id="tfServer"
+                        onChange={(e) => {
+                            this.setState({server: e.target.value});
+                        }}
+                        floatingLabelText="Server"
+                        defaultValue={this.state.server}
+                        floatingLabelStyle={{
+                            color: COLOR.itemHoverColor
+                        }}
+                    />
+                    <TextField
+                        id="tfVHost"
+                        onChange={(e) => {
+                            this.setState({vhost: e.target.value});
+                        }}
+                        floatingLabelText="VHost"
+                        defaultValue={this.state.vhost}
+                        floatingLabelStyle={{
+                            color: COLOR.itemHoverColor
+                        }}
                     />
                     <Checkbox
                         label="Save login credentials"
@@ -174,11 +213,12 @@ class Login extends React.Component {
                 }}>
                     <div style={{
 
-                        width: "100%"
-
+                        width: "100%",
+                        top: 0
                     }}>
                         <NotificationContainer />
                     </div>
+                    <br />
                     <div style={{
                         width: "50%",
                         display: "inline-block",

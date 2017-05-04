@@ -14,7 +14,7 @@ class Player extends React.Component {
             wcjs: wjsPrebuilt,
             buffer: 200
         });
-        this.player.addPlaylist("rtsp://195.148.104.124:1935/live/" + this.props.name);
+        this.player.addPlaylist(`rtsp://${this.props.host}:${this.props.port}/${this.props.appName}/${this.props.name}`);
         this.player.ui(false);
         this.player.notify(this.props.notify || "");
     }

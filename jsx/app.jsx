@@ -27,33 +27,39 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            view: (<Login changeStateTo={this.changeStateTo.bind(this)}/>)
+            view: (<Login wowza={wowza} changeStateTo={this.changeStateTo.bind(this)}/>)
 
         };
 
     }
-    componentDidMount(){
+
+    componentDidMount() {
     }
-    changeStateTo(state,settings) {
+
+    changeStateTo(state, settings) {
         let states = {
-            login: (<Login changeStateTo={this.changeStateTo.bind(this)}/>),
+            login: (<Login wowza={wowza} changeStateTo={this.changeStateTo.bind(this)}/>),
             monitoring: (<Monitoring changeStateTo={this.changeStateTo.bind(this)}
-                                     wowzaSEhost={wowza.host}
-                                     wowzaSEport={wowza.port}
-                                     username={settings.username}
-                                     password={settings.password}
-                                     wowzaApp={settings.appName}/>),
+                                     wowza={wowza}
+                                     settings={settings}
+            />),
             configuration: (<Configuration changeStateTo={this.changeStateTo.bind(this)}/>)
         };
-        if(states.hasOwnProperty(state)) {
+        if (states.hasOwnProperty(state)) {
             this.setState({
-                view:states[state]
+                view: states[state]
             });
         }
     }
+
     render() {
         return (
-            <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)} style={{height:"100%",width:"100%",backgroundColor:COLOR.itemColor,color:COLOR.itemColor}}>
+            <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)} style={{
+                height: "100%",
+                width: "100%",
+                backgroundColor: COLOR.itemColor,
+                color: COLOR.itemColor
+            }}>
                 {this.state.view}
             </MuiThemeProvider>);
     }
