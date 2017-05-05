@@ -17,11 +17,17 @@ class Player extends React.Component {
         this.player.addPlaylist(`rtsp://${this.props.host}:${this.props.port}/${this.props.appName}/${this.props.name}`);
         this.player.ui(false);
         this.player.notify(this.props.notify || "");
+        /*this._ = setInterval(()=>{
+            if(this.player.stateInt()===7){
+                this.props.unmount();
+            }
+        },1000);*/
     }
 
     componentWillUnmount() {
         //this.player.dispose();
         console.log("Unmount - Player");
+        //clearInterval(this._);
     }
 
     render() {

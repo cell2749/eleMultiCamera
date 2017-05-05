@@ -30,7 +30,7 @@ class Login extends React.Component {
 
     login() {
         let that = this;
-        //TODO test the connection details before logging in
+        //Testing the connection details before logging in
         let username = this.state.username;
         let password = this.state.password;
         let digestRequest = HTTPdigest(username, password);

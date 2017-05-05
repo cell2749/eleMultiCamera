@@ -203,30 +203,47 @@ class Monitoring extends React.Component {
     }
 
     setPattern(pattern) {
-        let patternIcons = this.state.patternIcons;
-        let patternString = "p" + pattern[0] + "x" + pattern[1];
-        for (let key in patternIcons) {
-            if (patternString == key) {
-                patternIcons[key]._ = patternIcons[key].active;
-            } else {
-                patternIcons[key]._ = patternIcons[key].normal;
+        let playersCount = Object.keys(this.state.players).length;
+        let patternSize = pattern[0] * pattern[1];
+        let that = this;
+        //Notify user about removing some videos for small patterns
+        if (playersCount > patternSize) {
+            if (!this._disableNotifications) {
+                that._disableNotifications = true;
+                let timeout = setTimeout(() => {
+                    that._disableNotifications = false
+                }, 3000);
+                NotificationManager.error("De-Select elements!", "Pattern Too Small!", 3000, () => {
+                    clearTimeout(timeout);
+                    that._disableNotifications = false
+                });
             }
-        }
-        //TODO remove some videos for small patterns
+        } else {
+            let patternIcons = this.state.patternIcons;
+            let patternString = "p" + pattern[0] + "x" + pattern[1];
+            for (let key in patternIcons) {
+                if (patternString == key) {
+                    patternIcons[key]._ = patternIcons[key].active;
+                } else {
+                    patternIcons[key]._ = patternIcons[key].normal;
+                }
+            }
 
-        let theater = (
-            <Theater
-                appName={this.props.wowza.appName}
-                host={this.props.wowza.host}
-                port={this.props.wowza.streamerPort}
-                videoNames={this.state.players}
-                pattern={pattern}/>
-        );
-        this.setState({
-            pattern: pattern,
-            patternIcons: patternIcons,
-            theater: theater
-        })
+
+            let theater = (
+                <Theater
+                    appName={this.props.wowza.appName}
+                    host={this.props.wowza.host}
+                    port={this.props.wowza.streamerPort}
+                    videoNames={this.state.players}
+                    pattern={pattern}/>
+            );
+            this.setState({
+                pattern: pattern,
+                patternIcons: patternIcons,
+                theater: theater
+            })
+        }
     }
 
     render() {
@@ -257,8 +274,11 @@ class Monitoring extends React.Component {
                 <Drawer openSecondary={false} open={this.state.drawerIsOpen}>
                     <div id="drawerContent" style={{backgroundColor: COLOR.drawerBackground}}>
                         <RaisedButton
-                            onTouchTap={this.toggleStreamNames}
-                            label="Request"
+                            onTouchTap={()=>{
+                                console.log("Direct Connection");
+                            }}
+                            disabled={true}
+                            label="Connect"
                             backgroundColor={COLOR.drawerButton}
                             style={{
                                 margin: 5
