@@ -10,7 +10,8 @@ global.configuration = {
     password: "",
     appName: wowza.appName,
     server: wowza.server,
-    vhost: wowza.vhost
+    vhost: wowza.vhost,
+    savedChecked: "false"
 };
 //const locals = {/* ...*/};
 ipcMain.on("getConfig", () => {
@@ -34,6 +35,7 @@ ipcMain.on("getConfig", () => {
                 global.configuration.appName = jsonData.appName || global.configuration.appName;
                 global.configuration.server = jsonData.server || global.configuration.server;
                 global.configuration.vhost = jsonData.vhost || global.configuration.vhost;
+                global.configuration.savedChecked = jsonData.savedChecked || global.configuration.savedChecked;
                 //TODO get password from keytar
             } catch (e) {
                 console.log("File Read caught error: ", e);
@@ -42,12 +44,15 @@ ipcMain.on("getConfig", () => {
     })
 });
 ipcMain.on("saveConfig", () => {
+    //TODO check safety of saved strings
+
     fs.writeFile(app.getPath("userData") + "/userConf",
         `{
-        "username":"${global.configuration.username}",
-        "appName":"${global.configuration.appName}",
-        "server":"${global.configuration.server}",
-        "vhost":"${global.configuration.vhost}"
+            "username":"${global.configuration.username}",
+            "appName":"${global.configuration.appName}",
+            "server":"${global.configuration.server}",
+            "vhost":"${global.configuration.vhost}",
+            "savedChecked":"${global.configuration.savedChecked}"
         }`
         , (err) => {
             if (err) {

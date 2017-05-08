@@ -20,7 +20,7 @@ class Login extends React.Component {
             appName: remote.getGlobal("configuration").appName,
             server: remote.getGlobal("configuration").server,
             vhost: remote.getGlobal("configuration").vhost,
-            save: false,
+            save: remote.getGlobal("configuration").savedChecked === "true",
             _disableNotifications: false
         };
         //50 Shades of bindings
@@ -106,16 +106,27 @@ class Login extends React.Component {
                             errorUsername: "",
                             errorApplication: ""
                         });
+
+                        //keytar.setPassword(wowza.host, username, password);
                         if (that.state.save) {
-                            //keytar.setPassword(wowza.host, username, password);
                             remote.getGlobal("configuration").username = username;
                             remote.getGlobal("configuration").appName = that.state.appName;
                             remote.getGlobal("configuration").password = password;
-                            ipcRenderer.send("saveConfig");
-                            console.log("saved");
+                            remote.getGlobal("configuration").server = that.state.server;
+                            remote.getGlobal("configuration").vhost = that.state.vhost;
+                        } else {
+                            remote.getGlobal("configuration").username = "";
+                            remote.getGlobal("configuration").appName = "";
+                            remote.getGlobal("configuration").password = "";
+                            remote.getGlobal("configuration").server = "";
+                            remote.getGlobal("configuration").vhost = "";
                         }
+
+                        remote.getGlobal("configuration").savedChecked = that.state.save.toString();
+                        ipcRenderer.send("saveConfig");
+
                         that.props.changeStateTo("monitoring", that.state);
-                        console.log("Success!");
+
                     }
                 } catch (e) {
                     console.log("Login parse error /");
@@ -138,70 +149,90 @@ class Login extends React.Component {
         };
         //console.log(remote.getGlobal("configuration").username);
         return (
-
             <Paper style={this.props.style || defaultStyle} zDepth={this.props.depth || 5}>
                 <TextField
                     id="tfUsername"
                     onChange={(e) => {
-                        this.setState({username: e.target.value});
+                        if (e.target.value.indexOf('"') == -1 && e.target.value.indexOf('`') == -1 && e.target.value.indexOf("'") == -1) {
+                            this.setState({username: e.target.value});
+                        } else {
+                            e.target.value = this.state.username;
+                        }
                     }}
                     floatingLabelText="Username"
-                    defaultValue={remote.getGlobal("configuration").username}
                     floatingLabelStyle={{
                         color: COLOR.itemHoverColor
                     }}
+                    value={this.state.username}
                 />
                 <TextField
                     id="tfPassword"
                     onChange={(e) => {
-                        this.setState({password: e.target.value});
+                        if (e.target.value.indexOf('"') == -1 && e.target.value.indexOf('`') == -1 && e.target.value.indexOf("'") == -1) {
+                            this.setState({password: e.target.value});
+                        } else {
+                            e.target.value = this.state.password;
+                        }
                     }}
                     floatingLabelText="Password"
-                    defaultValue={remote.getGlobal("configuration").password}
                     floatingLabelStyle={{
                         color: COLOR.itemHoverColor
                     }}
                     type="password"
+                    value={this.state.password}
                 /><br/>
                 <div style={{width: "50%", display: "inline-block", textAlign: "left"}}>
                     <TextField
                         id="tfApplication"
                         onChange={(e) => {
-                            this.setState({appName: e.target.value});
+                            if (e.target.value.indexOf('"') == -1 && e.target.value.indexOf('`') == -1 && e.target.value.indexOf("'") == -1) {
+                                this.setState({appName: e.target.value});
+                            } else {
+                                e.target.value = this.state.appName;
+                            }
                         }}
                         floatingLabelText="Application"
-                        defaultValue={remote.getGlobal("configuration").appName}
                         floatingLabelStyle={{
                             color: COLOR.itemHoverColor
                         }}
+                        value={this.state.appName}
                     />
                     <TextField
                         id="tfServer"
                         onChange={(e) => {
-                            this.setState({server: e.target.value});
+                            if (e.target.value.indexOf('"') == -1 && e.target.value.indexOf('`') == -1 && e.target.value.indexOf("'") == -1) {
+                                this.setState({server: e.target.value});
+                            } else {
+                                e.target.value = this.state.server;
+                            }
                         }}
                         floatingLabelText="Server"
-                        defaultValue={this.state.server}
                         floatingLabelStyle={{
                             color: COLOR.itemHoverColor
                         }}
+                        value={this.state.server}
                     />
                     <TextField
                         id="tfVHost"
                         onChange={(e) => {
-                            this.setState({vhost: e.target.value});
+                            if (e.target.value.indexOf('"') == -1 && e.target.value.indexOf('`') == -1 && e.target.value.indexOf("'") == -1) {
+                                this.setState({vhost: e.target.value});
+                            } else {
+                                e.target.value = this.state.vhost;
+                            }
                         }}
                         floatingLabelText="VHost"
-                        defaultValue={this.state.vhost}
                         floatingLabelStyle={{
                             color: COLOR.itemHoverColor
                         }}
+                        value={this.state.vhost}
                     />
                     <Checkbox
                         label="Save login credentials"
                         labelStyle={{color: COLOR.itemHoverColor}}
                         iconStyle={{fill: COLOR.itemHoverColor}}
                         style={{checkedColor: COLOR.exitButton}}
+                        checked={this.state.save}
                         onCheck={(e) => {
                             this.setState({save: !this.state.save});
                         }}
@@ -242,9 +273,7 @@ class Login extends React.Component {
                         />
                     </div>
                 </div>
-
             </Paper>
-
         );
     }
 }
