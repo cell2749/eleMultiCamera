@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 //Material-ui imports
-import {Paper, FlatButton} from 'material-ui';
+import {Paper, FlatButton, TextField} from 'material-ui';
 
 
 class MyList extends React.Component {
@@ -16,7 +16,8 @@ class MyList extends React.Component {
          * colors?
          * */
         this.state = {
-            elementStyles: {}
+            elementStyles: {},
+            filter: ""
         };
         //Button bindings
         this.toggleElement = this.toggleElement.bind(this);
@@ -58,22 +59,23 @@ class MyList extends React.Component {
                 backgroundColor = elementStyles[key].backgroundColor;
                 hoverColor = elementStyles[key].hoverColor;
             }
-
-            elementList.push(
-                <FlatButton
-                    key={key}
-                    ref={key}
-                    backgroundColor={backgroundColor}
-                    hoverColor={hoverColor}
-                    label={elementNames[key]}
-                    onClick={() => {
-                        this.toggleElement(key);
-                    }}
-                    style={{
-                        width: "100%"
-                    }}
-                />
-            );
+            if (elementNames[key].indexOf(this.state.filter) != -1 || this.state.filter == "") {
+                elementList.push(
+                    <FlatButton
+                        key={key}
+                        ref={key}
+                        backgroundColor={backgroundColor}
+                        hoverColor={hoverColor}
+                        label={elementNames[key]}
+                        onClick={() => {
+                            this.toggleElement(key);
+                        }}
+                        style={{
+                            width: "100%"
+                        }}
+                    />
+                );
+            }
 
         }
         const defaultStyle = {
@@ -85,10 +87,30 @@ class MyList extends React.Component {
             overflowY: "scroll",
             backgroundColor: "#616161"
         };
+        //TODO adjust style
         return (
-            <Paper style={this.props.style || defaultStyle} zDepth={this.props.depth || 1}>
-                {elementList}
-            </Paper>
+            <div style={{height: this.props.style.height || defaultStyle.height, width: "95%",display:"inline-block"}}>
+                <TextField
+                    id="listFilter"
+                    hintText="Filter"
+                    onChange={(e) => {
+                        this.setState({filter: e.target.value});
+                    }}
+                />
+                <Paper
+                    style={{
+                        height: "100%",
+                        width: "100%",
+                        margin: this.props.style.margin || 5,
+                        textAlign: this.props.style.textAlign || 'left',
+                        display: this.props.style.display || 'inline-block',
+                        backgroundColor: this.props.style.backgroundColor || "#616161",
+                        overflowY: this.props.style.overflowY || "scroll"
+                    }}
+                    zDepth={this.props.depth || 1}>
+                    {elementList}
+                </Paper>
+            </div>
 
         )
     }
