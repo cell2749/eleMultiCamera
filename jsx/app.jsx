@@ -27,6 +27,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            //view:(<Configuration/>)
             view: (<Login wowza={wowza} changeStateTo={this.changeStateTo.bind(this)}/>)
 
         };
