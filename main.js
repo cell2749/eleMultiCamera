@@ -77,7 +77,7 @@ app.on('ready', () => {
     mainWindow.maximize();
     //mainWindow.setFullScreen(true);
     mainWindow.loadURL(`file://${__dirname}/views/index.jade`);
-    //mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
     console.log("Architecture: " + process.arch);
 //// the rest...
 });

@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 //views
 import Monitoring from "../jsx/views/monitoring";
 import Login from "../jsx/views/login";
-import Configuration from "../jsx/views/configuration";
+import Gstream from "../jsx/views/gstream";
 
 import * as wowza from "../wowza.json";
 
@@ -27,8 +27,8 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            //view:(<Configuration/>)
-            view: (<Login wowza={wowza} changeStateTo={this.changeStateTo.bind(this)}/>)
+            view: (<Gstream changeStateTo={this.changeStateTo.bind(this)}/>)
+            //view: (<Login wowza={wowza} changeStateTo={this.changeStateTo.bind(this)}/>)
 
         };
 
@@ -44,7 +44,7 @@ class App extends React.Component {
                                      wowza={wowza}
                                      settings={settings}
             />),
-            configuration: (<Configuration changeStateTo={this.changeStateTo.bind(this)}/>)
+            gstream: (<Gstream changeStateTo={this.changeStateTo.bind(this)}/>)
         };
         if (states.hasOwnProperty(state)) {
             this.setState({
