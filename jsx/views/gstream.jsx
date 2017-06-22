@@ -1,25 +1,30 @@
 import * as React from "react";
-import * as wcjsGS from "wcjs-gs";
-import * as webglRenderer from "webgl-video-renderer";
+//import * as wcjsGS from "wcjs-gs";
+//import * as webglRenderer from "webgl-video-renderer";
+import wjs from "wcjs-player";
+import * as wjsPrebuilt from "wcjs-prebuilt";
+
 class Gstream extends React.Component {
     constructor(props) {
         super(props);
-
-        let renderContext = webglRenderer.setupCanvas(document.getElementById("GstreamCanvas"));
-        let wcjs_gs = new wcjsGS.Player();
-        wcjs_gs.parseLaunch("uridecodebin uri=http://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_480p_stereo.avi name=dec ! appsink name=sink dec. ! audioconvert ! autoaudiosink");
-        wcjs_gs.addAppSinkCallback("sink",
-            function(type, frame) {
-                if(type == wcjs_gs.AppSinkNewSample) {
-                    renderContext.render(frame, frame.width, frame.height, frame.planes[1], frame.planes[2]);
-                }
-            } );
-        wcjs_gs.setState(wcjs_gs.GST_STATE_PLAYING);
+        this.player = new wjs("#gstream").addPlayer({
+            autoplay: true,
+            wcjs: wjsPrebuilt,
+            buffer: 20
+        });
+        this.player.addPlaylist(`C:/Users/nikitak/Documents/rbpirGstream.sdp`);
+        this.player.ui(false);
+        this.player.notify(this.props.notify || "");
 
     }
 
     render() {
-        return (<canvas id="GstreamCanvas" width="400px" height="400px" backgroundColor="red">Hello World</canvas>);
+        let style = {
+            width: 400,
+            height: 400,
+            float: "right"
+        };
+        return (<div id={"GstreamPlayer"} style={this.props.style || style}></div>);
     }
 }
 module.exports = Gstream;

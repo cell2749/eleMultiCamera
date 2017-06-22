@@ -361,5 +361,3 @@ class Monitoring extends React.Component {
     }
 }
 module.exports = Monitoring;
-//ReactDOM.render(<App wowzaSEhost={wowza.host} wowzaSEport={wowza.port} username={wowza.username}
-//                    password={wowza.password} wowzaApp={wowza.appName}/>, document.getElementById("app"));
