@@ -99,8 +99,8 @@ class Login extends React.Component {
                         }
                     } else {
                         //TODO forward user to application and save login conf encoded in case of checkbox
-                        //TODO node-keytar for ciphering - requires ????
-                        //Problems with keytar
+                        //TODO node-keytar for ciphering - requires ???? ...Problems with keytar
+
                         that.setState({
                             errorPassword: "",
                             errorUsername: "",

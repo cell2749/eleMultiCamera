@@ -144,7 +144,7 @@ class Monitoring extends React.Component {
         if (Object.keys(this.state.players).length < MAX_SIZE) {
             let players = this.state.players;
 
-            //TODO Remove Player automatically if rtsp end shuts down -- callback???
+            //TODO Remove Player automatically if rtsp end shuts down -- callback???...
 
             if (!this.state.players.hasOwnProperty(address)) {
                 players[address] = this.state.streams[address];
@@ -256,8 +256,7 @@ class Monitoring extends React.Component {
             backgroundColor: COLOR.paper,
             overflowY: "scroll"
         };
-        //<MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-        //</MuiThemeProvider>
+
         return (
 
             <div>

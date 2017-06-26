@@ -1,0 +1,9 @@
+{
+  "username": "wowzaUsername ",
+  "appName": "wowzaAppName",
+  "server": "_defaultServer_",
+  "vhost": "_defaultVHost_",
+  "host": "wowza streamer address",
+  "apiPort": "wowza streamer api port (must be enabled on the wowza server side)",
+  "streamerPort": "wowza port for streaming"
+}
