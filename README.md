@@ -1,3 +1,4 @@
+# Electron stream viewer
 ## Installation
  
  `$ git clone git@gitlab.mw.metropolia.fi:sohjoa/elemulticamera.git`  
