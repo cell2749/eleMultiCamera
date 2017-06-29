@@ -26,7 +26,7 @@
     "react-tap-event-plugin": "^2.0.1",
     "request-digest": "^1.0.9",
     "wcjs-gs": "^0.2.7",
-    "wcjs-player": "6.0.1",
+    "wcjs-player": "cell2749/wcjs-player",
     "wcjs-prebuilt": "3.0.0"
   },
   "devDependencies": {
