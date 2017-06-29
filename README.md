@@ -20,6 +20,7 @@ electron - 1.4.3
 
 For displaying the stream names on the cameras:  
 wcjs-player module commented out 1195 and 1197 lines in index.js file after npm install
+Note! wcjs-player has lgpl-2.1 license, means the electron-app will have to be lgpl licensed.
 
 ## Description
 Electron (Nodejs) desktop application for viewing wowza video streams. 
